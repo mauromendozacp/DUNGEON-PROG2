@@ -1,6 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using SVS;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -8,7 +5,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float _characterSpeed = 6f;
     [SerializeField] private float _turnSmoothVelocity = 0.2f;
 
-       
     CharacterController _character;
     Animator _anim;
 
@@ -50,7 +46,12 @@ public class PlayerController : MonoBehaviour
         //Calculate movement and direction
         _direction = new Vector3(_hMove, _velocity, _vMove).normalized;
 
-        if(_direction.magnitude >= 0.1f)
+        if (Input.GetKey(KeyCode.LeftShift))
+        {
+            _direction *= 3;
+        }
+
+        if (_direction.magnitude > Mathf.Epsilon)
         {
             _targetAngle = Mathf.Atan2(_direction.x,_direction.z) * Mathf.Rad2Deg;
             _characterAngle = Mathf.SmoothDampAngle(transform.eulerAngles.y, _targetAngle, ref _turnSmoothTime, _turnSmoothVelocity);
@@ -60,11 +61,6 @@ public class PlayerController : MonoBehaviour
             _character.Move(_direction * _characterSpeed * Time.deltaTime);
         }
 
-        if(Input.GetKey(KeyCode.LeftShift))
-        {
-            _direction *= 3; 
-        }
- 
         //Control de Animaciones
         _anim.SetFloat("WalkVelocity",_direction.magnitude, 0.05f, Time.deltaTime);        
     }

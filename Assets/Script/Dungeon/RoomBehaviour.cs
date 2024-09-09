@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class RoomBehaviour : MonoBehaviour
@@ -8,7 +6,6 @@ public class RoomBehaviour : MonoBehaviour
     [SerializeField]private GameObject[] walls;
     [SerializeField]private GameObject[] doors;
 
-    
     public void UpdateRoom(bool[] status)
     {
         for (int i = 0; i < status.Length; i++)
@@ -16,6 +13,5 @@ public class RoomBehaviour : MonoBehaviour
             doors[i].SetActive(status[i]);
             walls[i].SetActive(!status[i]);
         }
-
     }
 }
