@@ -2,68 +2,95 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField] private float _characterSpeed = 6f;
-    [SerializeField] private float _turnSmoothVelocity = 0.2f;
+    [SerializeField] private float speed = 0f;
+    [SerializeField] private float turnSmoothVelocity = 0f;
 
-    CharacterController _character;
-    Animator _anim;
+    private CharacterController character = null;
+    private Animator anim = null;
 
-    float _vMove;
-    float _hMove;
+    private float vMove = 0f;
+    private float hMove = 0f;
 
-    Vector3 _direction;
-    float _turnSmoothTime;
-    float _targetAngle;
-    float _characterAngle;
-    float _gravity = -9.8f;
-    float _velocity;
+    private Vector3 direction = Vector3.zero;
+    private float turnSmoothTime = 0f;
+    private float velocityY = 0f;
 
-    // Start is called before the first frame update
-    void Start()
+    private float currentSpeed = 0f;
+
+    private void Awake()
     {
-        _character = GetComponent<CharacterController>();
-        _anim = GetComponentInChildren<Animator>();
+        character = GetComponent<CharacterController>();
+        anim = GetComponentInChildren<Animator>();
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Start()
     {
-        //apply gravity so character can always be on floor
-        if(!_character.isGrounded)
-        {
-           _velocity = _gravity * Time.deltaTime;
+        currentSpeed = speed;
+    }
 
+    private void Update()
+    {
+        UpdateInput();
+
+        ApplyGravity();
+        Movement();
+
+        UpdateAnimation();
+    }
+
+    public void ResetPlayer(Vector3 resetPosition)
+    {
+        character.enabled = false;
+
+        transform.SetPositionAndRotation(resetPosition, Quaternion.identity);
+
+        character.enabled = true;
+    }
+
+    private void UpdateInput()
+    {
+        hMove = Input.GetAxis("Horizontal") * -1;
+        vMove = Input.GetAxis("Vertical") * -1;
+
+        if (Input.GetKeyDown(KeyCode.LeftShift))
+        {
+            currentSpeed = speed * 3f;
+        }
+        else if (Input.GetKeyUp(KeyCode.LeftShift))
+        {
+            currentSpeed = speed;
+        }
+    }
+
+    private void ApplyGravity()
+    {
+        if (!character.isGrounded)
+        {
+            velocityY = -Physics.gravity.magnitude * Time.deltaTime;
         }
         else
         {
-            _velocity = 0f;
+            velocityY = 0f;
         }
-        
-        //Input Keyboard
-        _hMove = Input.GetAxis("Horizontal") * -1;
-        _vMove = Input.GetAxis("Vertical") * -1;
-
-        //Calculate movement and direction
-        _direction = new Vector3(_hMove, _velocity, _vMove).normalized;
-
-        if (Input.GetKey(KeyCode.LeftShift))
-        {
-            _direction *= 3;
-        }
-
-        if (_direction.magnitude > Mathf.Epsilon)
-        {
-            _targetAngle = Mathf.Atan2(_direction.x,_direction.z) * Mathf.Rad2Deg;
-            _characterAngle = Mathf.SmoothDampAngle(transform.eulerAngles.y, _targetAngle, ref _turnSmoothTime, _turnSmoothVelocity);
-           
-            transform.rotation = Quaternion.Euler(0f,_characterAngle,0f);
-
-            _character.Move(_direction * _characterSpeed * Time.deltaTime);
-        }
-
-        //Control de Animaciones
-        _anim.SetFloat("WalkVelocity",_direction.magnitude, 0.05f, Time.deltaTime);        
     }
 
+    private void Movement()
+    {
+        direction = new Vector3(hMove, velocityY, vMove).normalized;
 
+        if (direction.magnitude > Mathf.Epsilon)
+        {
+            float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg;
+            float characterAngle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothTime, turnSmoothVelocity);
+
+            transform.rotation = Quaternion.Euler(0f, characterAngle, 0f);
+
+            character.Move(direction * currentSpeed * Time.deltaTime);
+        }
+    }
+
+    private void UpdateAnimation()
+    {
+        anim.SetFloat("WalkVelocity", direction.magnitude, 0.05f, Time.deltaTime);
+    }
 }

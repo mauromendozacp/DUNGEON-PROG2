@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class DungeonGenerator : MonoBehaviour
 {
@@ -28,7 +27,8 @@ public class DungeonGenerator : MonoBehaviour
 
     public void RegenerateDungeon()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        roomPooling.ReleaseAllRooms();
+        MazeGenerator();
     }
 
     private void InitializeBoard()
