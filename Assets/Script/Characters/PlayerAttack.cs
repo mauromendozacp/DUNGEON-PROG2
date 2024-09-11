@@ -4,88 +4,84 @@ using UnityEngine;
 
 public class PlayerAttack : MonoBehaviour
 {
-    Animator _anim;
-    Camera _mainCamera;
-   
-    Ray _ray;
-    RaycastHit _hit;
+    [SerializeField] private LayerMask attackLayer;
 
-    List<IDamagable> _damagablesInRange;
-    [SerializeField] LayerMask _layerMask;
+    private Animator anim;
+    private Camera mainCamera;
+    private List<IDamagable> damagablesInRange;
 
-    void Start()
+    private void Awake()
     {
-        _anim = GetComponentInChildren<Animator>();
-        _damagablesInRange = new List<IDamagable>();
-        _mainCamera = Camera.main;
+        anim = GetComponentInChildren<Animator>();
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Start()
     {
-        if(Input.GetMouseButtonDown(0))
+        damagablesInRange = new List<IDamagable>();
+        mainCamera = Camera.main;
+    }
+
+    private void Update()
+    {
+        if (Input.GetMouseButtonDown(0))
         {
-            
-            _ray = _mainCamera.ScreenPointToRay(Input.mousePosition);
+            Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
 
-            if(Physics.Raycast(_ray, out _hit, 20,_layerMask))
+            if (Physics.Raycast(ray, out RaycastHit hit, 20,attackLayer))
             {
-                //Debug.DrawRay(_ray.origin, _ray.direction * 20, Color.red);
-               
-               //Melee Attack
-                var damagable = _hit.transform.GetComponent<IDamagable>();
+                IDamagable damagable = hit.transform.GetComponent<IDamagable>();
 
-                if(damagable != null )
+                if (damagable != null )
                 {
-                    SimpleAttack(_hit.transform.position);
+                    SimpleAttack(hit.transform.position);
                 }
             }
         }
 
-
-        if(Input.GetKey(KeyCode.LeftControl))
+        if (Input.GetKey(KeyCode.LeftControl))
         {
-            _anim.SetBool("Defense",true);
-        }else
+            anim.SetBool("Defense", true);
+        }
+        else
         {
-            _anim.SetBool("Defense",false);
+            anim.SetBool("Defense", false);
         }
     }
 
-    void SimpleAttack(Vector3 toLook)
+    private void OnTriggerEnter(Collider other)
+    {
+        IDamagable damagable = other.GetComponent<IDamagable>();
+
+        if (damagable != null)
+        {
+            damagablesInRange.Add(damagable);
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        IDamagable damagable = other.GetComponent<IDamagable>();
+
+        if (damagable != null && damagablesInRange.Contains(damagable))
+        {
+            damagablesInRange.Remove(damagable);
+        }
+    }
+
+    private void SimpleAttack(Vector3 toLook)
     {   
-        if(_damagablesInRange.Count >= 1)
+        if (damagablesInRange.Count > 0)
         {
-            this.transform.LookAt(toLook);
+            transform.LookAt(toLook);
            
-            _damagablesInRange[0].Damage(10);
+            damagablesInRange[0].Damage(10);
           
-            _anim.SetTrigger("SimpleAttack");
+            anim.SetTrigger("SimpleAttack");
         }
     }
 
-    void StrongAttack()
+    private void StrongAttack()
     {
-        _anim.SetTrigger("StrongAttack");
-    }
-
-    private void OnTriggerEnter(Collider other) 
-    {
-        var damagable = other.GetComponent<IDamagable>();
-
-        if(damagable != null)
-        {
-            _damagablesInRange.Add(damagable);
-        }    
-    }
-
-    private void OnTriggerExit(Collider other) 
-    {
-        var damagable = other.GetComponent<IDamagable>();
-
-        if(damagable != null && _damagablesInRange.Contains(damagable))
-        {
-            _damagablesInRange.Remove(damagable);
-        }    
+        anim.SetTrigger("StrongAttack");
     }
 }

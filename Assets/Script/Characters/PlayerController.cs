@@ -2,7 +2,8 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField] private float speed = 0f;
+    [SerializeField] private float walkSpeed = 0f;
+    [SerializeField] private float runSpeed = 0f;
     [SerializeField] private float turnSmoothVelocity = 0f;
 
     private CharacterController character = null;
@@ -25,7 +26,7 @@ public class PlayerController : MonoBehaviour
 
     private void Start()
     {
-        currentSpeed = speed;
+        currentSpeed = walkSpeed;
     }
 
     private void Update()
@@ -54,11 +55,11 @@ public class PlayerController : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.LeftShift))
         {
-            currentSpeed = speed * 3f;
+            currentSpeed = runSpeed;
         }
         else if (Input.GetKeyUp(KeyCode.LeftShift))
         {
-            currentSpeed = speed;
+            currentSpeed = walkSpeed;
         }
     }
 
@@ -85,12 +86,19 @@ public class PlayerController : MonoBehaviour
 
             transform.rotation = Quaternion.Euler(0f, characterAngle, 0f);
 
-            character.Move(direction * currentSpeed * Time.deltaTime);
+            character.Move(currentSpeed * Time.deltaTime * direction);
         }
     }
 
     private void UpdateAnimation()
     {
-        anim.SetFloat("WalkVelocity", direction.magnitude, 0.05f, Time.deltaTime);
+        anim.SetFloat("Speed", GetMovementSpeed(), 0.05f, Time.deltaTime);
+    }
+
+    private float GetMovementSpeed()
+    {
+        float inputMove = Mathf.Clamp(Mathf.Abs(hMove) + Mathf.Abs(vMove), 0f, 1f);
+
+        return inputMove * currentSpeed / runSpeed;
     }
 }

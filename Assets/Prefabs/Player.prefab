@@ -185,7 +185,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2055bc5e61813454a89d046808421709, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 3
+  walkSpeed: 3
+  runSpeed: 6
   turnSmoothVelocity: 0.2
 --- !u!114 &2499167597897728485
 MonoBehaviour:
@@ -199,9 +200,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 077d4ef0c8b06b04a9da6d213cac2a03, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _layerMask:
+  attackLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 64
 --- !u!1001 &3568246358446313761
 PrefabInstance:
   m_ObjectHideFlags: 0
