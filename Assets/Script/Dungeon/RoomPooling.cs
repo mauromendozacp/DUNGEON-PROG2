@@ -5,8 +5,8 @@ using UnityEngine.Pool;
 
 public class RoomPooling : MonoBehaviour
 {
-    [SerializeField] private GameObject[] rooms = null;
     [SerializeField] private Transform holder = null;
+    [SerializeField] private GameObject[] rooms = null;
 
     private ObjectPool<GameObject> roomPool = null;
     private List<GameObject> roomList = null;
@@ -27,6 +27,8 @@ public class RoomPooling : MonoBehaviour
 
     public void ReleaseAllRooms()
     {
+        roomList.Reverse();
+
         for (int i = 0; i < roomList.Count; i++)
         {
             roomPool.Release(roomList[i]);

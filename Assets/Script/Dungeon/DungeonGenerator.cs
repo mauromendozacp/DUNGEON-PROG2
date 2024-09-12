@@ -4,23 +4,36 @@ using UnityEngine;
 
 public class DungeonGenerator : MonoBehaviour
 {
-    [SerializeField] private RoomPooling roomPooling = null;
-
+    [Header("Dungeon Configuration")]
     [SerializeField] private Vector2 dungeonSize;
     [SerializeField] private int startPos = 0;
     [SerializeField] private Vector2 offset;
     [SerializeField] private int maxIterator = 0;
     
-    private List<Cell> board;
+    [Header("Seed Configuration")]
+    [SerializeField] private int seed = 0;
+    [SerializeField] private bool useRandomSeed = false;
+
+    private RoomPooling roomPooling = null;
+
+    private List<Cell> board = null;
     private int lastCell = 0;
-   
+
+    private void Awake()
+    {
+        roomPooling = GetComponent<RoomPooling>();
+    }
+
     public void Init()
     {
         roomPooling.Init();
+
+        board = new List<Cell>();
     }
 
     public void MazeGenerator()
     {
+        InitRandomSeed();
         InitializeBoard();
         GenerateDungeon();
     }
@@ -33,9 +46,6 @@ public class DungeonGenerator : MonoBehaviour
 
     private void InitializeBoard()
     {
-        //Create Dungeon board
-        board = new List<Cell>();
-
         float boardLenght = dungeonSize.x * dungeonSize.y;
 
         for (int i = 0; i < boardLenght; i++)
@@ -43,26 +53,18 @@ public class DungeonGenerator : MonoBehaviour
             board.Add(new Cell());
         }
 
-        //Create Dungeon Maze
-        //StarPosition determina el casillero donde el arranca el Dungeon
         int currentCell = startPos;
-
-        //Generamos la Pila(Stack) donde armaremos el Laberinto
         Stack<int> path = new Stack<int>();
 
         for (int i = 0; i < maxIterator; i++)
         {
-            //marca la celda actual como visitada
             board[currentCell].visited = true;
 
-            //si se alcanza la celda de salida
-            //ser termina el bucle
             if (currentCell == board.Count - 1)
             {
                 break;
             }
 
-            //Check Neighbors cells
             List<int> neighbors = CheckNeighbors(currentCell);
 
             if (neighbors.Count == 0)
@@ -172,5 +174,20 @@ public class DungeonGenerator : MonoBehaviour
         }
 
         return neighbors;
+    }
+
+    private void InitRandomSeed()
+    {
+        if (useRandomSeed)
+        {
+            int randomSeed = System.DateTime.Now.GetHashCode();
+            Random.InitState(randomSeed);
+
+            Debug.Log("Seed Generated: " + randomSeed);
+        }
+        else
+        {
+            Random.InitState(seed);
+        }
     }
 }

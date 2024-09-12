@@ -7,7 +7,7 @@ public class GameController : MonoBehaviour
 
     private Vector3 startPlayerPosition = Vector3.zero;
 
-    void Start()
+    private void Start()
     {
         startPlayerPosition = playerController.transform.position;
 
@@ -15,15 +15,9 @@ public class GameController : MonoBehaviour
         dungeonGenerator.MazeGenerator();
     }
 
-    private void OnGUI()
+    public void ResetGame()
     {
-        float w = Screen.width / 2;
-        float h = Screen.height - 80;
-
-        if (GUI.Button(new Rect(w, h, 250, 50), "Regenerate Dungeon"))
-        {
-            playerController.ResetPlayer(startPlayerPosition);
-            dungeonGenerator.RegenerateDungeon();
-        }
+        playerController.ResetPlayer(startPlayerPosition);
+        dungeonGenerator.RegenerateDungeon();
     }
 }
