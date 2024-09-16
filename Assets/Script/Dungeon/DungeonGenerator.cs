@@ -14,19 +14,19 @@ public class DungeonGenerator : MonoBehaviour
     [SerializeField] private int seed = 0;
     [SerializeField] private bool useRandomSeed = false;
 
-    private RoomPooling roomPooling = null;
+    private RoomFactory roomFactory = null;
 
     private List<Cell> board = null;
     private int lastCell = 0;
 
     private void Awake()
     {
-        roomPooling = GetComponent<RoomPooling>();
+        roomFactory = GetComponent<RoomFactory>();
     }
 
     public void Init()
     {
-        roomPooling.Init();
+        roomFactory.Init();
 
         board = new List<Cell>();
     }
@@ -40,7 +40,9 @@ public class DungeonGenerator : MonoBehaviour
 
     public void RegenerateDungeon()
     {
-        roomPooling.ReleaseAllRooms();
+        roomFactory.ClearRooms();
+        board.Clear();
+
         MazeGenerator();
     }
 
@@ -50,7 +52,9 @@ public class DungeonGenerator : MonoBehaviour
 
         for (int i = 0; i < boardLenght; i++)
         {
-            board.Add(new Cell());
+            Cell cell = new Cell();
+
+            board.Add(cell);
         }
 
         int currentCell = startPos;
@@ -120,6 +124,9 @@ public class DungeonGenerator : MonoBehaviour
         }
 
         lastCell = currentCell;
+
+        board[0].type = ROOM_TYPE.Entry;
+        board[lastCell].type = ROOM_TYPE.Final;
     }
 
     private void GenerateDungeon()
@@ -132,12 +139,14 @@ public class DungeonGenerator : MonoBehaviour
 
                 if (currentCell.visited)
                 {
-                    GameObject newRoom = roomPooling.GetRoomObject();
+                    Room newRoom = roomFactory.GetRoomByType(currentCell.type);
                     newRoom.transform.position = new Vector3(i * offset.x, 0f, -j * offset.y);
                     newRoom.transform.rotation = Quaternion.identity;
 
-                    RoomBehaviour rb = newRoom.GetComponent<RoomBehaviour>();
-                    rb.UpdateRoom(currentCell.status);
+                    if (newRoom is RoomBehaviour rb)
+                    {
+                        rb.UpdateRoom(currentCell.status);
+                    }
 
                     newRoom.name += " " + i + "-" + j;
                 }

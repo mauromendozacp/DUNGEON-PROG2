@@ -1,50 +1,50 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+
 using UnityEngine;
 
 public class RoomFactory : MonoBehaviour
 {
-   // [SerializeField] private Room _roomZero;
-   // [SerializeField] private Room _roomOne;
-    //private Dictionary< string, Room> _roomsDictionary;
+    [SerializeField] private Room[] rooms = null;
+    [SerializeField] private Transform holder = null;
 
-    [SerializeField] private Room[] _rooms;
-    
+    private List<Room> roomsList = null;
 
-    private void Awake() 
+    public void Init()
     {
-        /*_roomsDictionary = new Dictionary< string, Room>();
-       
-        foreach (var room in _rooms)
-        {
-            _roomsDictionary.Add(room.IdRoom, room);
-        }*/
+        roomsList = new List<Room>();
     }
 
-    /*public Room Create(string _idRoom)
+    public Room GetRoomByType(ROOM_TYPE type)
     {
+        List<Room> roomList = rooms.ToList().Where(r => r.Type == type).ToList();
 
-        if(!_roomsDictionary.TryGetValue(_idRoom, out Room room))
+        if (roomList.Count > 0)
         {
-            throw new Exception($"Room with id {_idRoom} does not exist");
-            
+            int randomIndex = Random.Range(0, roomList.Count);
+            return CreateRoom(randomIndex);
         }
 
-        return Instantiate(room);
+        return null;
+    }
 
-    */
-     /*   switch (_idRoom)
+    public void ClearRooms()
+    {
+        foreach (var room in roomsList)
         {
-            case "roomZero":
-                return Instantiate(_roomZero);
-                
-            case "roomOne":
-                return Instantiate(_roomOne);
-            
-            default:
-                return null;
+            Destroy(room.gameObject);
         }
-    
-    }*/
+
+        roomsList.Clear();
+    }
+
+    private Room CreateRoom(int index)
+    {
+        Room room = Instantiate(rooms[index], holder);
+        room.Init();
+
+        roomsList.Add(room);
+
+        return room;
+    }
 }

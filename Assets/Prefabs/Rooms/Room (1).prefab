@@ -178,7 +178,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4803627618925061253}
   - component: {fileID: 2915894387910607049}
-  - component: {fileID: 1020502423652384497}
   m_Layer: 0
   m_Name: Room (1)
   m_TagString: Untagged
@@ -195,7 +194,7 @@ Transform:
   m_GameObject: {fileID: 7594267549774512874}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -8, y: 0, z: 0}
+  m_LocalPosition: {x: 42, y: 0, z: -6}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -217,6 +216,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f773a8f60fe180b48a244ace0b9714a6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  id: 
+  type: 0
   walls:
   - {fileID: 6250175887047190173}
   - {fileID: 1522942014805286736}
@@ -227,19 +228,6 @@ MonoBehaviour:
   - {fileID: 3483891892578268527}
   - {fileID: 2269997653434606382}
   - {fileID: 7126361369134292394}
---- !u!114 &1020502423652384497
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7594267549774512874}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9edd1cb423f94634c84456bfe33b6c06, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _idRoom: roomOne
 --- !u!1001 &58456940664325660
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -505,6 +493,10 @@ PrefabInstance:
     - target: {fileID: 4463566038210007903, guid: 49a5f24a081cbbc44bd23d76c2869723, type: 3}
       propertyPath: m_Name
       value: Down Door
+      objectReference: {fileID: 0}
+    - target: {fileID: 4463566038210007903, guid: 49a5f24a081cbbc44bd23d76c2869723, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6966706505589406848, guid: 49a5f24a081cbbc44bd23d76c2869723, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1103,6 +1095,10 @@ PrefabInstance:
     - target: {fileID: 6229247520373792897, guid: 3ad7a1cffb2556547a8b7e60fd320431, type: 3}
       propertyPath: m_Name
       value: Left Wall
+      objectReference: {fileID: 0}
+    - target: {fileID: 6229247520373792897, guid: 3ad7a1cffb2556547a8b7e60fd320431, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6229247520373792897, guid: 3ad7a1cffb2556547a8b7e60fd320431, type: 3}
       propertyPath: m_TagString
@@ -2832,6 +2828,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Up Door
       objectReference: {fileID: 0}
+    - target: {fileID: 4463566038210007903, guid: 49a5f24a081cbbc44bd23d76c2869723, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6966706505589406848, guid: 49a5f24a081cbbc44bd23d76c2869723, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.8336387
@@ -2963,6 +2963,10 @@ PrefabInstance:
     - target: {fileID: 6229247520373792897, guid: 3ad7a1cffb2556547a8b7e60fd320431, type: 3}
       propertyPath: m_Name
       value: Right Wall
+      objectReference: {fileID: 0}
+    - target: {fileID: 6229247520373792897, guid: 3ad7a1cffb2556547a8b7e60fd320431, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6229247520373792897, guid: 3ad7a1cffb2556547a8b7e60fd320431, type: 3}
       propertyPath: m_TagString
